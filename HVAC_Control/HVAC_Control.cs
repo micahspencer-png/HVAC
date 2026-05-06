@@ -16,8 +16,10 @@ namespace HVACSmartHomeController
     {
         public HVACSystem()
         {
+            Initialize = true;
             InitializeComponent();
             SetDefaults();
+            Initialize = false;
         }
         //ISU Color Palette
         Color GrowlGreyLight = Color.FromArgb(230, 231, 232);
@@ -27,6 +29,10 @@ namespace HVACSmartHomeController
         Color RoarangeL = Color.FromArgb(246, 146, 64);
         Color BengalBlack = Color.FromArgb(0, 0, 0);
         bool Connect = false;
+        bool Initialize = false;
+        double Set = 70.0;
+        double Change = 0.5;
+        string degree = "\u00B0";
         //Program Logic------------------------------------------------------------------------------------------------------------------
 
         void SetDefaults() 
@@ -39,6 +45,25 @@ namespace HVACSmartHomeController
             ExitButton.ForeColor = BengalBlack;
             ConnectButton.BackColor = GrowlGreyLight;
             ConnectButton.ForeColor = BengalBlack;
+            ClockLabel.ForeColor = BengalBlack;
+            ClockLabel.BackColor = GrowlGreyMed;
+            ClockLabel.Text = $"{DateTime.Now:t}";
+            UpButton.BackColor = Roarange;
+            DownButton.BackColor = Roarange;
+            SetTempDisplayLabel.ForeColor = BengalBlack;
+            SetTempDisplayLabel.BackColor = GrowlGrey;
+            if (Set % 2 == 0)
+            {
+                SetTempDisplayLabel.Text = $"{Set.ToString()}.0{degree}F";
+            }
+            else if (Set % 1 == 0)
+            {
+                SetTempDisplayLabel.Text = $"{Set.ToString()}.0{degree}F";
+            }
+            else
+            {
+                SetTempDisplayLabel.Text = $"{Set.ToString()}{degree}F";
+            }
         }
 
         void SerialConnect(string name)
@@ -192,7 +217,10 @@ namespace HVACSmartHomeController
 
         private void QYAT_Timer_Tick(object sender, EventArgs e)
         {
-            GetQYAtBoards();
+            if (!Initialize)
+            {
+                GetQYAtBoards();
+            }
         }
 
         private void ConnectButton_Click(object sender, EventArgs e)
@@ -204,6 +232,56 @@ namespace HVACSmartHomeController
             catch 
             { 
             
+            }
+        }
+
+        private void ClockTimer_Tick(object sender, EventArgs e)
+        {
+            if (!Initialize)
+            {
+                ClockLabel.Text = $"{DateTime.Now:t}";
+            }
+        }
+
+        private void UpButton_Click(object sender, EventArgs e)
+        {
+            if (Set < 90) 
+            {
+                double Val = Set + Change;
+                Set = Val;
+                if (Set % 2 == 0)
+                {
+                    SetTempDisplayLabel.Text = $"{Set.ToString()}.0{degree}F";
+                }
+                else if (Set % 1 == 0) 
+                {
+                    SetTempDisplayLabel.Text = $"{Set.ToString()}.0{degree}F";
+                }
+                else 
+                {
+                    SetTempDisplayLabel.Text = $"{Set.ToString()}{degree}F";
+                }
+            }
+        }
+
+        private void DownButton_Click(object sender, EventArgs e)
+        {
+            if (Set > 50)
+            {
+                double Val = Set - Change;
+                Set = Val;
+                if (Set % 2 == 0)
+                {
+                    SetTempDisplayLabel.Text = $"{Set.ToString()}.0{degree}F";
+                }
+                else if (Set % 1 == 0)
+                {
+                    SetTempDisplayLabel.Text = $"{Set.ToString()}.0{degree}F";
+                }
+                else
+                {
+                    SetTempDisplayLabel.Text = $"{Set.ToString()}{degree}F";
+                }
             }
         }
     }

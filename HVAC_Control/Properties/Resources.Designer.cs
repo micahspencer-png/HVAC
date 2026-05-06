@@ -63,9 +63,29 @@ namespace HVAC_Control.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Downarrow {
+            get {
+                object obj = ResourceManager.GetObject("Downarrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ISU_RCET_Horizontal_Logo {
             get {
                 object obj = ResourceManager.GetObject("ISU_RCET_Horizontal_Logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Uparrow {
+            get {
+                object obj = ResourceManager.GetObject("Uparrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
