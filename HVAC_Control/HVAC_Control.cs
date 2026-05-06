@@ -17,6 +17,7 @@ namespace HVACSmartHomeController
         public HVACSystem()
         {
             InitializeComponent();
+            SetDefaults();
         }
         //ISU Color Palette
         Color GrowlGreyLight = Color.FromArgb(230, 231, 232);
@@ -25,7 +26,20 @@ namespace HVACSmartHomeController
         Color Roarange = Color.FromArgb(244, 121, 32);
         Color RoarangeL = Color.FromArgb(246, 146, 64);
         Color BengalBlack = Color.FromArgb(0, 0, 0);
+        bool Connect = false;
         //Program Logic------------------------------------------------------------------------------------------------------------------
+
+        void SetDefaults() 
+        {
+            ConnectionTextBox.BackColor = GrowlGreyLight;
+            ConnectionTextBox.ForeColor = BengalBlack;
+            PortComboBox.BackColor = GrowlGreyLight;
+            PortComboBox.ForeColor = BengalBlack;
+            ExitButton.BackColor = GrowlGreyLight;
+            ExitButton.ForeColor = BengalBlack;
+            ConnectButton.BackColor = GrowlGreyLight;
+            ConnectButton.ForeColor = BengalBlack;
+        }
 
         void SerialConnect(string name)
         {
@@ -39,7 +53,9 @@ namespace HVACSmartHomeController
                 serialPort1.Open();
                 if (serialPort1.IsOpen)
                 {
-                    //MessageBox.Show($"{serialPort1.PortName} Connected Successfully");
+                    ConnectionTextBox.Text = "Connected";
+                    ConnectionTextBox.BackColor = RoarangeL;
+                    Connect = true;
                 }
 
             }
@@ -81,22 +97,37 @@ namespace HVACSmartHomeController
 
         void GetQYAtBoards()
         {
-            PortComboBox.Text = "";
-            PortComboBox.Items.Clear();
-            string[] names = SerialPort.GetPortNames();
-            foreach (string name in names)
+            if (Connect == false)
             {
-                SerialConnect(name);
-                if (IsQYAtBoardCheck())
+                PortComboBox.Text = "";
+                PortComboBox.Items.Clear();
+                string[] names = SerialPort.GetPortNames();
+                foreach (string name in names)
                 {
-                    PortComboBox.Items.Add(name);
+                    SerialConnect(name);
+                    if (IsQYAtBoardCheck())
+                    {
+                        PortComboBox.Items.Add(name);
+                    }
+                }
+                if (PortComboBox.Items.Count > 0)
+                {
+                    PortComboBox.SelectedIndex = 0;
+                }
+                serialPort1.Close();
+            }
+            else
+            {
+                if (serialPort1.IsOpen) 
+                { 
+                    
+                }
+                else 
+                { 
+                    Connect = false;
+                    ConnectionTextBox.Text = "";
                 }
             }
-            if (PortComboBox.Items.Count > 0)
-            {
-                PortComboBox.SelectedIndex = 0;
-            }
-            serialPort1.Close();
         }
 
         bool IsQYAtBoardCheck()
@@ -162,6 +193,18 @@ namespace HVACSmartHomeController
         private void QYAT_Timer_Tick(object sender, EventArgs e)
         {
             GetQYAtBoards();
+        }
+
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SerialConnect(PortComboBox.SelectedItem.ToString());
+            }
+            catch 
+            { 
+            
+            }
         }
     }
 }
